@@ -41,6 +41,11 @@ const users = {
   ],
 };
 
+function generateID() {
+  const id = Math.floor(Math.random() * 10000);
+  return id.toString();
+}
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -93,8 +98,12 @@ app.post("/users", (req, res) => {
 
 app.delete("/users/:id", (req, res) => {
   const userId = req.params.id;
-  deleteUser(userId);
-  res.send();
+  const result = deleteUser(userId);
+  if (result.Terminated) {
+    res.status(204).send();
+  } else {
+    res.status(404).send();
+  }
 });
 
 const findUserByName = (name) => {
@@ -108,11 +117,17 @@ const findUserByJob = (job) =>
   users["users_list"].find((user) => user["job"] === job);
 
 const addUser = (user) => {
+  const randomId = generateID();
+  user.id = randomId;
   users["users_list"].push(user);
   return user;
 };
 
 const deleteUser = (userId) => {
-  const userIndex = users["users_list"].findIndex((user) => user.id === userId);
-  users["users_list"].splice(userIndex, 1);
+  if (userId !== -1) {
+    const deleted = users["users_list"].splice(userId, 1)[0];
+    return { Terminated: true, deleted };
+  } else {
+    return { success: false };
+  }
 };

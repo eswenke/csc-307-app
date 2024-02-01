@@ -5,15 +5,26 @@ import Form from "./Form";
 function MyApp() {
   const [characters, setCharacters] = useState([]);
 
-  function removeOneCharacter(index) {
-    const updated = characters.filter((character, i) => {
-      return i !== index;
-    });
-    setCharacters(updated);
-  }
-
-  function updateList(person) {
-    setCharacters([...characters, person]);
+  function removeOneCharacter(index, id) {
+    fetch(`http://localhost:8000/users/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        console.log("Response status:", res.status);
+        if (res.status === 204) {
+          const updated = characters.filter((character, i) => {
+            return i !== index;
+          });
+          setCharacters(updated);
+        } else if (res.status === 404) {
+          console.log("Resource not found.");
+        } else {
+          throw new Error("Failed to delete user");
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting user:", error);
+      });
   }
 
   function fetchUsers() {
@@ -36,17 +47,23 @@ function MyApp() {
   function updateList(person) {
     postUser(person)
       .then((res) => {
-        if (res.status != 201) 
-          throw new Error("content not created!");
-        return res.json();
+        if (res.status === 201) {
+          return res.json();
+        }
       })
-      .then(() => setCharacters([...characters, person]))
+      .then((updated) => {
+        if (updated) {
+          setCharacters([...characters, updated]);
+        }
+      })
       .catch((error) => {
         console.log(error);
       });
   }
 
   useEffect(() => {
+    console.log("characters:", characters);
+
     fetchUsers()
       .then((res) => res.json())
       .then((json) => setCharacters(json["users_list"]))
