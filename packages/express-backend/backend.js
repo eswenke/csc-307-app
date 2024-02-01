@@ -64,9 +64,20 @@ app.get("/users/:id", (req, res) => {
   }
 });
 
+app.post("/users", (req, res) => {
+  const userToAdd = req.body;
+  addUser(userToAdd);
+  res.send();
+});
+
 const findUserByName = (name) => {
   return users["users_list"].filter((user) => user["name"] === name);
 };
 
 const findUserById = (id) =>
   users["users_list"].find((user) => user["id"] === id);
+
+const addUser = (user) => {
+  users["users_list"].push(user);
+  return user;
+};
