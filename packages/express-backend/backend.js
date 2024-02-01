@@ -1,8 +1,10 @@
 import express from "express";
+import cors from "cors";
 
 const app = express();
 const port = 8000;
 
+app.use(cors());
 app.use(express.json());
 
 app.listen(port, () => {
@@ -52,12 +54,22 @@ app.get("/users", (req, res) => {
   let new_result = findUserByJob(job);
 
   if (new_result === undefined) {
-    res.status(404).send("Resource not found.");
+    res.send(users);
   } else {
     res.send(new_result);
   }
 });
 
+app.get("/users", (req, res) => {
+  const name = req.query.name;
+  if (name != undefined) {
+    let result = findUserByName(name);
+    result = { users_list: result };
+    res.send(result);
+  } else {
+    res.send(users);
+  }
+});
 
 app.get("/users/:id", (req, res) => {
   const id = req.params["id"]; //or req.params.id
