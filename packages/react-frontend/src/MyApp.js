@@ -35,6 +35,11 @@ function MyApp() {
 
   function updateList(person) {
     postUser(person)
+      .then((res) => {
+        if (res.status != 201) 
+          throw new Error("content not created!");
+        return res.json();
+      })
       .then(() => setCharacters([...characters, person]))
       .catch((error) => {
         console.log(error);
