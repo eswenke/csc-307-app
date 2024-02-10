@@ -65,8 +65,8 @@ app.post("/users", async (req, res) => {
 //   }
 // });
 
-app.delete('/users/:id', async (req, res) => {
-  const userId = req.params.id;
+app.delete('/users/:_id', async (req, res) => {
+  const userId = req.params._id;
   console.log(req.params.id);
 
   try {
@@ -75,7 +75,6 @@ app.delete('/users/:id', async (req, res) => {
     if (!deletedUser) {
       return res.status(404).json({ error: 'User not found' });
     }
-
     return res.status(204).send(); // 204 for successful deletion with no content
   } catch (error) {
     console.error('Error deleting user:', error);
