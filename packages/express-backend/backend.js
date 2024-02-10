@@ -67,9 +67,10 @@ app.post("/users", async (req, res) => {
 
 app.delete('/users/:id', async (req, res) => {
   const userId = req.params.id;
+  console.log(req.params.id);
 
   try {
-    const deletedUser = await deleteUserById(userId);
+    const deletedUser = await userServices.deleteUserById(userId);
 
     if (!deletedUser) {
       return res.status(404).json({ error: 'User not found' });

@@ -33,8 +33,7 @@ function addUser(user) {
 }
 
 function deleteUserById(id) {
-  const promise = userModel.findByIdAndDelete(id);
-  return promise;
+  return userModel.findByIdAndDelete(id);
 }
 
 function findUserByName(name) {
